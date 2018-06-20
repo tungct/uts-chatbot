@@ -5,9 +5,13 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 import json
 from datetime import datetime
-
+from adapter.intend import adapterIntend
+from adapter.greeting import adapterGreeting
+import adapter.ner_crf.ner_crf as ner
 from engine.hoaian import HoaiAn
 
+adapIntend = adapterIntend.AdapterIntend()
+adapGreeting = adapterGreeting.AdapterGreeting()
 
 def index(request):
     return render(request, 'index.html')
@@ -32,9 +36,20 @@ def chatbot(request):
         time = datetime.now().strftime('%Y%m%d %H:%M:%S')
         log_text = "{} {} {} {}".format(ip, time, "USER:", text)
         log(log_text)
-        response_message = HoaiAn.reply("uid", text)
+        # response_message = HoaiAn.reply("uid", text)
+
+        intend = adapIntend.get_intend(text)
+        print("intend : ", intend)
+        if intend == 1 or intend == 4:
+            response_message = adapGreeting.make_response(text)
+        else:
+            ner_response = ner.detect_entity(text)
+            print(ner_response)
+            response_message = "hihihi"
+
         log_text = "{} {} {} {}".format(ip, time, "BOT:", response_message)
         log(log_text)
+
         result["output"] = response_message
     except Exception as e:
         print(e)
