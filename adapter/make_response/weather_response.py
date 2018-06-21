@@ -96,3 +96,17 @@ def filter_msg( data, weather, locs, times):
     res['data'] = filter_data
     return res
 
+def return_msg(filter_msg):
+    msg = ''
+    for i in range(len(filter_msg['data'])):
+        msg += " Tại " + str(filter_msg['data'][i]['địa điểm']).title() + " " + str(
+            filter_msg['data'][i]['thời gian']) + ': '
+        for k, v in filter_msg['data'][i]['thời tiết'].items():
+            if isinstance(v, dict):
+                msg += str(k) + ":  "
+                for i, j in v.items():
+                    msg += ", "
+            else:
+                msg += str(k) + " : " + str(v)
+            msg += ", "
+    return msg

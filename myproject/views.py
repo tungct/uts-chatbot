@@ -33,6 +33,7 @@ def chatbot(request):
     try:
         data = json.loads(request.body.decode("utf-8"))
         text = data["text"]
+
         uid = data["uid"]
         ip = request.META["REMOTE_ADDR"]
         time = datetime.now().strftime('%Y%m%d %H:%M:%S')
@@ -50,29 +51,17 @@ def chatbot(request):
 
         # if intend is weather question
         else:
+            # detect entity from user message
             ner_response = adapNer.detect_entity(text)
-            print(ner_response)
+
+            # return message response to user
             results = weather_response.make_msg(ner_response)
-            print(results)
-            response_message = "hihihi"
-            msg = ''
-            for i in range(len(results['data'])):
-                msg += " Tại " + str(results['data'][i]['địa điểm']).title() + " " + str(
-                    results['data'][i]['thời gian']) + ': '
-                for k, v in results['data'][i]['thời tiết'].items():
-                    if isinstance(v, dict):
-                        msg += str(k) + ":  "
-                        for i, j in v.items():
-                            msg += ", "
-                    else:
-                        msg += str(k) + " : " + str(v)
-                    msg += ", "
-            print("msg : ", msg)
+            response_message = weather_response.return_msg(results)
 
         log_text = "{} {} {} {}".format(ip, time, "BOT:", response_message)
         log(log_text)
 
-        result["output"] = msg
+        result["output"] = response_message
     except Exception as e:
         print(e)
         result = {"error": "Bad request!"}
