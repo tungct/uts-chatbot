@@ -7,11 +7,13 @@ import json
 from datetime import datetime
 from adapter.intend import adapterIntend
 from adapter.greeting import adapterGreeting
-import adapter.ner_crf.ner_crf as ner
+from adapter.ner_crf import adapterNer
+from adapter.make_response import weather_response
 from engine.hoaian import HoaiAn
 
 adapIntend = adapterIntend.AdapterIntend()
 adapGreeting = adapterGreeting.AdapterGreeting()
+adapNer = adapterNer.AdapterNer()
 
 def index(request):
     return render(request, 'index.html')
@@ -40,17 +42,37 @@ def chatbot(request):
 
         intend = adapIntend.get_intend(text)
         print("intend : ", intend)
+
+        # if intend is greeting and other
         if intend == 1 or intend == 4:
-            response_message = adapGreeting.make_response(text)
+            response_message = HoaiAn.reply("uid", text)
+            # response_message = adapGreeting.make_response(text)
+
+        # if intend is weather question
         else:
-            ner_response = ner.detect_entity(text)
+            ner_response = adapNer.detect_entity(text)
             print(ner_response)
+            results = weather_response.make_msg(ner_response)
+            print(results)
             response_message = "hihihi"
+            msg = ''
+            for i in range(len(results['data'])):
+                msg += " Tại " + str(results['data'][i]['địa điểm']).title() + " " + str(
+                    results['data'][i]['thời gian']) + ': '
+                for k, v in results['data'][i]['thời tiết'].items():
+                    if isinstance(v, dict):
+                        msg += str(k) + ":  "
+                        for i, j in v.items():
+                            msg += ", "
+                    else:
+                        msg += str(k) + " : " + str(v)
+                    msg += ", "
+            print("msg : ", msg)
 
         log_text = "{} {} {} {}".format(ip, time, "BOT:", response_message)
         log(log_text)
 
-        result["output"] = response_message
+        result["output"] = msg
     except Exception as e:
         print(e)
         result = {"error": "Bad request!"}

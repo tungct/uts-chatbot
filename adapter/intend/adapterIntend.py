@@ -1,6 +1,4 @@
-from nltk import classify
 from sklearn.externals import joblib
-import pycrfsuite
 import setting
 import re
 

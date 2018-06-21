@@ -79,3 +79,9 @@ def detect_entity(question):
         pred.append(tuple(kv))
     return pred
 
+def get_weather(list_entity):
+    wet = []
+    for i in range(len(list_entity)):
+        if list_entity[i][1] == "WET":
+            wet.append(list_entity[i][0])
+    return wet
