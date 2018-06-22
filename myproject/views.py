@@ -9,7 +9,8 @@ from adapter.intend import adapterIntend
 from adapter.greeting import adapterGreeting
 from adapter.ner_crf import adapterNer
 from adapter.make_response import weather_response
-from adapter.manage_dialog import mangeDialog
+from adapter.manage_dialog import manageDialog
+from adapter.manage_dialog import dialogContext
 from engine.hoaian import HoaiAn
 
 adapIntend = adapterIntend.AdapterIntend()
@@ -17,7 +18,7 @@ adapGreeting = adapterGreeting.AdapterGreeting()
 adapNer = adapterNer.AdapterNer()
 
 def index(request):
-    mangeDialog.initDialog(request)
+    manageDialog.initDialog(request)
     return render(request, 'index.html')
 
 
@@ -32,6 +33,12 @@ def log(text):
 @csrf_exempt
 def chatbot(request):
     result = {}
+    results = dialogContext.response(request)
+    print("session")
+    print(request.session["loc"])
+    print(request.session["time"])
+    print(request.session["weather"])
+    print("end")
     try:
         data = json.loads(request.body.decode("utf-8"))
         text = data["text"]
@@ -52,6 +59,7 @@ def chatbot(request):
 
         # if intend is weather question
         else:
+
             # detect entity from user message
             ner_response = adapNer.detect_entity(text)
 
