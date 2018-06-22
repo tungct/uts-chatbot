@@ -9,6 +9,7 @@ from adapter.intend import adapterIntend
 from adapter.greeting import adapterGreeting
 from adapter.ner_crf import adapterNer
 from adapter.make_response import weather_response
+from adapter.manage_dialog import mangeDialog
 from engine.hoaian import HoaiAn
 
 adapIntend = adapterIntend.AdapterIntend()
@@ -16,6 +17,7 @@ adapGreeting = adapterGreeting.AdapterGreeting()
 adapNer = adapterNer.AdapterNer()
 
 def index(request):
+    mangeDialog.initDialog(request)
     return render(request, 'index.html')
 
 
@@ -33,7 +35,6 @@ def chatbot(request):
     try:
         data = json.loads(request.body.decode("utf-8"))
         text = data["text"]
-
         uid = data["uid"]
         ip = request.META["REMOTE_ADDR"]
         time = datetime.now().strftime('%Y%m%d %H:%M:%S')

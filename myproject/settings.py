@@ -48,7 +48,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
 ]
 
 ROOT_URLCONF = 'myproject.urls'
@@ -73,6 +72,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'myproject.wsgi.application'
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
