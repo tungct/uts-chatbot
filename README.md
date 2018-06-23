@@ -21,6 +21,7 @@ rivescript==1.14.9
 pyvi==0.0.9.1
 python-crfsuite==0.9.5
 sklearn
+GoogleMaps
 ```
 
 ### 1.2 Source
