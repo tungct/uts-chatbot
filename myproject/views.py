@@ -33,11 +33,12 @@ def log(text):
 @csrf_exempt
 def chatbot(request):
     result = {}
-    results = dialogContext.response(request)
+    dialog = dialogContext.response(request)
     print("session")
     print(request.session["loc"])
     print(request.session["time"])
     print(request.session["weather"])
+    print(request.session["bot_msg"])
     print("end")
     try:
         data = json.loads(request.body.decode("utf-8"))
@@ -50,22 +51,26 @@ def chatbot(request):
         # response_message = HoaiAn.reply("uid", text)
 
         intend = adapIntend.get_intend(text)
-        print("intend : ", intend)
+        if isinstance(dialog['msg'], str):
+            response_message = dialog['msg']
+        else:
+            response_message = weather_response.return_msg(dialog['msg'])
+            print(dialog['msg']['data'])
 
         # if intend is greeting and other
-        if intend == 1 or intend == 4:
-            response_message = HoaiAn.reply("uid", text)
-            # response_message = adapGreeting.make_response(text)
-
-        # if intend is weather question
-        else:
-
-            # detect entity from user message
-            ner_response = adapNer.detect_entity(text)
-
-            # return message response to user
-            results = weather_response.make_msg(ner_response)
-            response_message = weather_response.return_msg(results)
+        # if intend == 1 or intend == 4:
+        #     response_message = HoaiAn.reply("uid", text)
+        #     # response_message = adapGreeting.make_response(text)
+        #
+        # # if intend is weather question
+        # else:
+        #
+        #     # detect entity from user message
+        #     ner_response = adapNer.detect_entity(text)
+        #
+        #     # return message response to user
+        #     results = weather_response.make_msg(ner_response)
+        #     response_message = weather_response.return_msg(results)
 
         log_text = "{} {} {} {}".format(ip, time, "BOT:", response_message)
         log(log_text)

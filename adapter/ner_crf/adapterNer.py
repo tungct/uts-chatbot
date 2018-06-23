@@ -1,7 +1,3 @@
-from builtins import dict
-
-from datetime import date
-from nltk import word_tokenize
 import datetime
 from adapter.ner_crf.time_detection import TimeDetector
 from adapter.ner_crf.date_detection import DateDetector
@@ -17,7 +13,7 @@ class AdapterNer(object):
 
 
     def detect_entity(self,user_msg):
-        sentence = word_tokenize(user_msg.lower().strip())
+        # sentence = word_tokenize(user_msg.lower().strip())
         list_entity = ner_crf.detect_entity(user_msg)
         return self.pass_entity(list_entity,user_msg)
 
@@ -75,9 +71,10 @@ class AdapterNer(object):
 
     @staticmethod
     def detect_question_again(user_msg):
+        print("detect again")
         user_msg = re.sub("\?","",user_msg).strip()
         matchObj = re.match(r'(vậy|vậy còn|thế còn|còn|thế|thì sao) (.*) .*', user_msg, re.M | re.I)
-        match = re.match(r'(.*) .* (vậy|vậy còn|thế còn|còn|thế|thì sao)', user_msg, re.M | re.I)
+        match = re.match(r'(.*) .* (vậy|vậy còn|thế còn|còn|thế|thì sao)(.*)', user_msg, re.M | re.I)
         if matchObj :
             return True
         if match:

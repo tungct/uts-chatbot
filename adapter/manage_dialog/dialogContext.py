@@ -38,6 +38,7 @@ def response(request):
         data = adapterNer.detect_entity(user_msg)
         if adapterNer.detect_question_again(user_msg):
             data = adapterNer.detect_entity(user_msg)
+            print("Hihhi", data)
             return make_msg(request,data, intend)
         else:
             manager.updateState(request,1)
@@ -72,9 +73,9 @@ def make_msg(request,data=None, intend=4):
             if len(data["WEATHER"]) != 0:
                 manager.updateWeather(request, data["WEATHER"])
                 manager.updateState(request,3)
-                res_msg= res.query_api(
-                {"loc": manager.getLoc(request), "time": manager.getTime(request),"weather": manager.getWeather(request)})
-                manager.updateMsg(request,res_msg)
+            res_msg= res.query_api(
+            {"loc": manager.getLoc(request), "time": manager.getTime(request),"weather": manager.getWeather(request)})
+            manager.updateMsg(request,res_msg)
 
     else:
         if intend == 1:
